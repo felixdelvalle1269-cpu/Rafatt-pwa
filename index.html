@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rafatt Seguridad - PWA Operativa</title>
+    <title>Rafatt Seguridad - Sistema Integral 24/7</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,167 +12,526 @@
                 extend: {
                     colors: {
                         rafattDark: '#0f172a',
-                        rafattPrimary: '#1e293b',
+                        rafattCard: '#1e293b',
                         rafattAccent: '#0284c7',
-                        rafattSuccess: '#16a34a'
+                        rafattSuccess: '#16a34a',
+                        rafattDanger: '#dc2626',
+                        rafattWarning: '#d97706'
                     }
                 }
             }
         }
     </script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbars & subtle transitions */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .tab-active { background-color: #0284c7 !important; color: #ffffff !important; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans antialiased text-slate-800 pb-20">
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col pb-24 md:pb-6">
 
-    <header class="bg-rafattDark text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+    <!-- Encabezado Principal -->
+    <header class="bg-slate-950 border-b border-slate-800 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="bg-rafattAccent w-10 h-10 rounded-lg flex items-center justify-center font-bold text-xl shadow text-white">
+                <div class="bg-sky-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-black text-xl shadow-lg border border-sky-400/30">
                     R
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold leading-tight">Rafatt Seguridad</h1>
+                    <h1 class="text-base md:text-lg font-bold leading-tight text-white flex items-center gap-2">
+                        Rafatt Seguridad
+                        <span class="text-[10px] bg-sky-950 text-sky-400 border border-sky-700/50 px-2 py-0.5 rounded font-mono">v2.5</span>
+                    </h1>
                     <p class="text-xs text-slate-400">RIF: J-407284576</p>
                 </div>
             </div>
-            <span class="inline-flex items-center gap-1.5 bg-green-500/20 text-green-400 border border-green-500/30 text-xs px-3 py-1 rounded-full font-semibold">
-                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                Sistema Activo
-            </span>
+
+            <!-- Indicador Status & Pánico -->
+            <div class="flex items-center gap-3">
+                <button onclick="triggerPanicAlert()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-3 py-2 rounded-lg shadow-md animate-pulse flex items-center gap-1.5 border border-red-400">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span class="hidden sm:inline">BOTÓN DE PÁNICO</span>
+                </button>
+                <span class="hidden md:inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs px-3 py-1.5 rounded-full font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    Central Operativa
+                </span>
+            </div>
         </div>
+
+        <!-- Menú de Navegación Horizontal (Escritorio / Tablet) -->
+        <nav class="hidden md:flex max-w-7xl mx-auto px-4 gap-1 overflow-x-auto text-xs font-semibold py-2 border-t border-slate-800/60">
+            <button onclick="switchTab('dashboard')" id="btn-tab-dashboard" class="tab-btn tab-active px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center gap-2 transition">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </button>
+            <button onclick="switchTab('bitacora')" id="btn-tab-bitacora" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center gap-2 transition">
+                <i class="fa-solid fa-clipboard-list"></i> Bitácora
+            </button>
+            <button onclick="switchTab('rondas')" id="btn-tab-rondas" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center gap-2 transition">
+                <i class="fa-solid fa-route"></i> Rondas
+            </button>
+            <button onclick="switchTab('almacen')" id="btn-tab-almacen" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center gap-2 transition">
+                <i class="fa-solid fa-boxes-stacked"></i> Almacén
+            </button>
+            <button onclick="switchTab('asistencia')" id="btn-tab-asistencia" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center gap-2 transition">
+                <i class="fa-solid fa-user-clock"></i> Asistencia
+            </button>
+            <button onclick="switchTab('operaciones')" id="btn-tab-operaciones" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center gap-2 transition">
+                <i class="fa-solid fa-headset"></i> Operaciones 24/7
+            </button>
+            <button onclick="switchTab('directorio')" id="btn-tab-directorio" class="tab-btn px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800 flex items-center gap-2 transition">
+                <i class="fa-solid fa-users"></i> Directorio
+            </button>
+        </nav>
     </header>
 
-    <main class="max-w-5xl mx-auto px-4 pt-6 space-y-6">
-        <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Personal en Turno</span>
-                <div class="flex items-baseline justify-between mt-2">
-                    <span class="text-2xl font-black text-slate-800" id="stat-guards">12</span>
-                    <i class="fa-solid fa-user-shield text-slate-400"></i>
+    <!-- Contenedor de Alerta de Pánico en Pantalla -->
+    <div id="panicBanner" class="hidden bg-red-600 text-white px-4 py-3 text-center font-bold text-sm shadow-xl flex justify-between items-center animate-bounce">
+        <span class="flex items-center gap-2">
+            <i class="fa-solid fa-bell text-xl"></i>
+            ¡ALERTA DE EMERGENCIA ACTIVADA EN CENTRAL! CÓDIGO ROJO NOTIFICADO A SUPERVISIÓN.
+        </span>
+        <button onclick="dismissPanic()" class="bg-red-800 px-3 py-1 rounded text-xs border border-red-400 hover:bg-red-900">Desactivar</button>
+    </div>
+
+    <!-- Contenido Dinámico de las Pestañas -->
+    <main class="max-w-7xl mx-auto px-4 pt-6 flex-grow w-full">
+
+        <!-- 1. DASHBOARD / PANEL DE CONTROL -->
+        <section id="module-dashboard" class="tab-content space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-sky-400"></i> Panel General Operativo
+                    </h2>
+                    <p class="text-xs text-slate-400">Resumen en tiempo real del estado de seguridad y patrullaje.</p>
+                </div>
+                <div class="text-xs bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-slate-300 flex items-center gap-2">
+                    <i class="fa-regular fa-clock text-sky-400"></i>
+                    <span id="liveClock">--:--:--</span>
                 </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Incidentes Hoy</span>
-                <div class="flex items-baseline justify-between mt-2">
-                    <span class="text-2xl font-black text-slate-800" id="stat-incidents">0</span>
-                    <i class="fa-solid fa-triangle-exclamation text-slate-400"></i>
+
+            <!-- Métricas Clave -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700/80 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Oficiales en Turno</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span class="text-3xl font-black text-white" id="stat-guards">14</span>
+                        <div class="w-10 h-10 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center">
+                            <i class="fa-solid fa-user-shield text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700/80 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Incidentes Hoy</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span class="text-3xl font-black text-white" id="stat-incidents">0</span>
+                        <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                            <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700/80 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Rondas Completadas</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span class="text-3xl font-black text-white" id="stat-rounds">8</span>
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                            <i class="fa-solid fa-route text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700/80 flex flex-col justify-between">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Estado de Red</span>
+                    <div class="flex items-baseline justify-between mt-3">
+                        <span class="text-sm font-bold text-emerald-400">En Línea</span>
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                            <i class="fa-solid fa-wifi text-lg"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Novedades</span>
-                <div class="flex items-baseline justify-between mt-2">
-                    <span class="text-2xl font-black text-slate-800" id="stat-logs">2</span>
-                    <i class="fa-solid fa-clipboard-list text-slate-400"></i>
+
+            <!-- Accesos Rápida a Módulos -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div onclick="switchTab('bitacora')" class="cursor-pointer bg-slate-800 p-5 rounded-xl border border-slate-700 hover:border-sky-500 transition group">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-white group-hover:text-sky-400">Bitácora Operativa</h3>
+                        <i class="fa-solid fa-clipboard-list text-sky-400"></i>
+                    </div>
+                    <p class="text-xs text-slate-400">Registrar novedades, accesos o eventualidades del turno actual.</p>
                 </div>
-            </div>
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Red</span>
-                <div class="flex items-baseline justify-between mt-2">
-                    <span class="text-sm font-bold text-green-600">Sincronizado</span>
-                    <i class="fa-solid fa-wifi text-green-500"></i>
+
+                <div onclick="switchTab('rondas')" class="cursor-pointer bg-slate-800 p-5 rounded-xl border border-slate-700 hover:border-sky-500 transition group">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-white group-hover:text-sky-400">Control de Rondas</h3>
+                        <i class="fa-solid fa-location-dot text-emerald-400"></i>
+                    </div>
+                    <p class="text-xs text-slate-400">Marcar puntos de control perimetral e iniciar recorrido de supervisión.</p>
+                </div>
+
+                <div onclick="switchTab('operaciones')" class="cursor-pointer bg-slate-800 p-5 rounded-xl border border-slate-700 hover:border-sky-500 transition group">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-white group-hover:text-sky-400">Central de Operaciones</h3>
+                        <i class="fa-solid fa-headset text-amber-400"></i>
+                    </div>
+                    <p class="text-xs text-slate-400">Supervisar estado de puestos y comunicación activa 24/7.</p>
                 </div>
             </div>
         </section>
 
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-            <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-pen-to-square text-rafattAccent"></i>
-                Registrar Novedad en Bitácora
-            </h2>
-            <form id="logForm" onsubmit="addLog(event)" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Agente / Inspector</label>
-                        <input type="text" id="logOfficer" required placeholder="Nombre del oficial" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-rafattAccent outline-none">
+        <!-- 2. BITÁCORA OPERATIVA -->
+        <section id="module-bitacora" class="tab-content hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-list text-sky-400"></i> Bitácora de Novedades
+                    </h2>
+                    <p class="text-xs text-slate-400">Registro oficial de novedades en tiempo real.</p>
+                </div>
+            </div>
+
+            <!-- Formulario de Registro -->
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                <h3 class="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle text-sky-400"></i> Nueva Entrada en Bitácora
+                </h3>
+                <form id="logForm" onsubmit="addLogEntry(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Oficial / Supervisor</label>
+                            <input type="text" id="logOfficer" required placeholder="Ej: Inspector Félix del Valle" class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-sky-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Tipo de Evento</label>
+                            <select id="logType" class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-sky-500 outline-none">
+                                <option value="Ronda de Rutina">Ronda de Rutina</option>
+                                <option value="Control de Acceso">Control de Acceso</option>
+                                <option value="Incidente / Alarma">Incidente / Alarma</option>
+                                <option value="Relevo de Turno">Relevo de Turno</option>
+                                <option value="Novedad Vehicular">Novedad Vehicular</option>
+                            </select>
+                        </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Tipo de Evento</label>
-                        <select id="logType" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-rafattAccent outline-none bg-white">
-                            <option value="Ronda de Rutina">Ronda de Rutina</option>
-                            <option value="Control de Acceso">Control de Acceso</option>
-                            <option value="Incidente / Alarma">Incidente / Alarma</option>
-                            <option value="Relevo de Turno">Relevo de Turno</option>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Detalle del Informe</label>
+                        <textarea id="logMessage" required rows="3" placeholder="Escriba aquí los detalles..." class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white focus:border-sky-500 outline-none"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold px-5 py-2.5 rounded-lg shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Guardar Novedad
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de Historial -->
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                <h3 class="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-sky-400"></i> Historial Reciente
+                </h3>
+                <div id="logContainer" class="space-y-3">
+                    <!-- Registros predeterminados dinámicos -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. MÓDULO DE RONDAS -->
+        <section id="module-rondas" class="tab-content hidden space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-route text-emerald-400"></i> Control de Rondas Perimetrales
+                </h2>
+                <p class="text-xs text-slate-400">Verificación e inspección de puntos de control en instalación.</p>
+            </div>
+
+            <!-- Progreso de Ronda Actual -->
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                    <div>
+                        <h3 class="text-sm font-bold text-white" id="roundStatusTitle">Ronda Perimetral Sector Norte</h3>
+                        <p class="text-xs text-slate-400">Oficial a cargo: <span class="text-sky-400 font-semibold" id="roundOfficer">Carlos Pérez</span></p>
+                    </div>
+                    <span id="roundBadge" class="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs px-3 py-1 rounded-full font-semibold w-fit">
+                        En Progreso
+                    </span>
+                </div>
+
+                <!-- Barra de Progreso -->
+                <div>
+                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>Puntos Checkeados</span>
+                        <span id="roundProgressText">2 / 4 (50%)</span>
+                    </div>
+                    <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden border border-slate-700">
+                        <div id="roundProgressBar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 50%;"></div>
+                    </div>
+                </div>
+
+                <!-- Lista Checkpoints -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2" id="checkpointsContainer">
+                    <!-- Dinámico vía JS -->
+                </div>
+
+                <div class="flex justify-end gap-3 pt-3">
+                    <button onclick="resetRonda()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-semibold px-4 py-2 rounded-lg">Reiniciar Ronda</button>
+                    <button onclick="completeRonda()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-lg shadow">Finalizar Ronda</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. MÓDULO DE ALMACÉN -->
+        <section id="module-almacen" class="tab-content hidden space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Almacén e Inventario de Equipos
+                </h2>
+                <p class="text-xs text-slate-400">Control y préstamo de armamento, radios y utilería táctica.</p>
+            </div>
+
+            <!-- Grid de Stock de Equipos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="inventoryGrid">
+                <!-- Se llena con JS -->
+            </div>
+
+            <!-- Formulario Préstamo/Devolución -->
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                <h3 class="text-sm font-bold text-slate-200 mb-4">Registro de Movimiento de Equipo</h3>
+                <form onsubmit="handleInventoryMovement(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Equipo</label>
+                        <select id="invEquipment" class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+                            <option value="Radios VHF Motorola">Radios VHF Motorola</option>
+                            <option value="Chalecos Antibalas Nivel IIIA">Chalecos Antibalas Nivel IIIA</option>
+                            <option value="Linternas Tácticas LED">Linternas Tácticas LED</option>
+                            <option value="Conos de Seguridad">Conos de Seguridad</option>
                         </select>
                     </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Detalle de la Novedad</label>
-                    <textarea id="logMessage" required rows="2" placeholder="Describa la novedad observada..." class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-rafattAccent outline-none"></textarea>
-                </div>
-                <div class="flex justify-end">
-                    <button type="submit" class="bg-rafattPrimary hover:bg-slate-800 text-white font-semibold text-sm px-5 py-2.5 rounded-lg shadow transition-colors flex items-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Guardar Novedad
-                    </button>
-                </div>
-            </form>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Acción</label>
+                        <select id="invAction" class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+                            <option value="prestamo">Asignar / Salida (-1)</option>
+                            <option value="devolucion">Reingreso / Devolución (+1)</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs py-2.5 rounded-lg transition">
+                            Procesar Movimiento
+                        </button>
+                    </div>
+                </form>
+            </div>
         </section>
 
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-            <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-list-check text-rafattAccent"></i>
-                Bitácora Operativa (Historial)
-            </h2>
-            <div id="logContainer" class="space-y-3">
-                <div class="p-3 bg-slate-50 rounded-lg border-l-4 border-slate-700 flex justify-between items-start">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold text-slate-800">Oficial Carlos Pérez</span>
-                            <span class="text-[10px] bg-slate-200 text-slate-700 font-semibold px-2 py-0.5 rounded">Relevo de Turno</span>
+        <!-- 5. MÓDULO DE ASISTENCIA -->
+        <section id="module-asistencia" class="tab-content hidden space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-user-clock text-sky-400"></i> Asistencia y Marcaje de Turnos
+                </h2>
+                <p class="text-xs text-slate-400">Registro de entrada y salida del personal de seguridad.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Marcador -->
+                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-4">
+                    <h3 class="text-sm font-bold text-slate-200">Marcaje de Turno</h3>
+                    <form onsubmit="registerAttendance(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Agente</label>
+                            <input type="text" id="attOfficer" required placeholder="Nombre y Apellido" class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
                         </div>
-                        <p class="text-sm text-slate-600">Relevo de turno nocturno sin novedades en el perímetro principal.</p>
-                    </div>
-                    <span class="text-xs font-medium text-slate-400">06:00 AM</span>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Puesto de Guardias</label>
+                            <select id="attPost" class="w-full text-sm bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-white outline-none">
+                                <option value="Acceso Principal (Garita 1)">Acceso Principal (Garita 1)</option>
+                                <option value="Patrullaje Interno">Patrullaje Interno</option>
+                                <option value="Supervisión General">Supervisión General</option>
+                                <option value="Estacionamiento B">Estacionamiento B</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 pt-2">
+                            <button type="submit" onclick="attendanceType='ENTRADA'" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 rounded-lg">Entrada</button>
+                            <button type="submit" onclick="attendanceType='SALIDA'" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-2.5 rounded-lg">Salida</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="p-3 bg-slate-50 rounded-lg border-l-4 border-blue-600 flex justify-between items-start">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-xs font-bold text-slate-800">Inspector Félix del Valle</span>
-                            <span class="text-[10px] bg-blue-100 text-blue-800 font-semibold px-2 py-0.5 rounded">Ronda de Rutina</span>
-                        </div>
-                        <p class="text-sm text-slate-600">Inspección de puntos de control OK. Sistema de cámaras totalmente operativo.</p>
+
+                <!-- Tabla Asistencia Hoy -->
+                <div class="md:col-span-2 bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <h3 class="text-sm font-bold text-slate-200 mb-4">Registro del Día</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-slate-300">
+                            <thead class="bg-slate-900 text-slate-400 uppercase font-semibold">
+                                <tr>
+                                    <th class="p-3">Agente</th>
+                                    <th class="p-3">Puesto</th>
+                                    <th class="p-3">Evento</th>
+                                    <th class="p-3">Hora</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody" class="divide-y divide-slate-700/60">
+                                <!-- Dinámico -->
+                            </tbody>
+                        </table>
                     </div>
-                    <span class="text-xs font-medium text-slate-400">08:30 AM</span>
                 </div>
             </div>
         </section>
 
-        <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-            <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-users text-rafattAccent"></i>
-                Directorio Operativo de Personal
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600">
-                            FV
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-slate-800">Félix del Valle</p>
-                            <p class="text-xs text-slate-500">Supervisor General</p>
-                        </div>
-                    </div>
-                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded font-medium">Activo</span>
+        <!-- 6. OPERACIONES 24/7 -->
+        <section id="module-operaciones" class="tab-content hidden space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-headset text-emerald-400"></i> Central de Operaciones 24/7
+                </h2>
+                <p class="text-xs text-slate-400">Supervisión activa de garitas y puestos de guardia.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="postsGrid">
+                <!-- Se llena con JS -->
+            </div>
+        </section>
+
+        <!-- 7. DIRECTORIO DE PERSONAL -->
+        <section id="module-directorio" class="tab-content hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-users text-sky-400"></i> Directorio de Personal
+                    </h2>
+                    <p class="text-xs text-slate-400">Nómina activa y supervisores de Rafatt Seguridad.</p>
                 </div>
-                <div class="flex items-center justify-between p-3 border border-slate-200 rounded-lg">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-600">
-                            CP
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-slate-800">Carlos Pérez</p>
-                            <p class="text-xs text-slate-500">Oficial de Seguridad</p>
-                        </div>
-                    </div>
-                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded font-medium">Activo</span>
-                </div>
+                <input type="text" id="directorySearch" onkeyup="filterDirectory()" placeholder="Buscar por nombre o cargo..." class="text-xs bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white w-full sm:w-64 outline-none focus:border-sky-500">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="directoryGrid">
+                <!-- Dinámico -->
             </div>
         </section>
     </main>
 
+    <!-- Barra de Navegación Inferior Móvil (Fija) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 px-2 py-1.5 z-40 flex justify-around text-[10px] font-medium text-slate-400">
+        <button onclick="switchTab('dashboard')" id="mbtn-tab-dashboard" class="mobile-tab flex flex-col items-center gap-1 p-1 text-sky-400">
+            <i class="fa-solid fa-chart-line text-sm"></i> Dashboard
+        </button>
+        <button onclick="switchTab('bitacora')" id="mbtn-tab-bitacora" class="mobile-tab flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-clipboard-list text-sm"></i> Bitácora
+        </button>
+        <button onclick="switchTab('rondas')" id="mbtn-tab-rondas" class="mobile-tab flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-route text-sm"></i> Rondas
+        </button>
+        <button onclick="switchTab('almacen')" id="mbtn-tab-almacen" class="mobile-tab flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-boxes-stacked text-sm"></i> Almacén
+        </button>
+        <button onclick="switchTab('asistencia')" id="mbtn-tab-asistencia" class="mobile-tab flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-user-clock text-sm"></i> Asistencia
+        </button>
+        <button onclick="switchTab('operaciones')" id="mbtn-tab-operaciones" class="mobile-tab flex flex-col items-center gap-1 p-1">
+            <i class="fa-solid fa-headset text-sm"></i> Central 24/7
+        </button>
+    </nav>
+
+    <!-- Script de Datos y Control Lógico -->
     <script>
-        let logCount = 2;
-        function addLog(e) {
+        // --- ESTADO GLOBAL Y DATOS MOCK ---
+        let logCounter = 2;
+        let attendanceType = 'ENTRADA';
+
+        const logs = [
+            { id: 1, officer: 'Oficial Carlos Pérez', type: 'Relevo de Turno', message: 'Relevo de turno nocturno sin novedades en el área perimetral.', time: '06:00 AM', style: 'border-slate-500 bg-slate-800/40' },
+            { id: 2, officer: 'Inspector Félix del Valle', type: 'Ronda de Rutina', message: 'Verificación de puntos de control OK. Sistema de monitoreo totalmente funcional.', time: '08:30 AM', style: 'border-sky-500 bg-sky-950/20' }
+        ];
+
+        const checkpoints = [
+            { id: 1, name: 'Garita Principal Acceso A', checked: true, time: '08:00 AM' },
+            { id: 2, name: 'Perímetro Trasero / Depósitos', checked: true, time: '08:15 AM' },
+            { id: 3, name: 'Estacionamiento de Visitantes', checked: false, time: '--:--' },
+            { id: 4, name: 'Edificio Central / Oficinas', checked: false, time: '--:--' }
+        ];
+
+        const inventory = [
+            { id: 1, name: 'Radios VHF Motorola', count: 12, total: 15, icon: 'fa-walkie-talkie' },
+            { id: 2, name: 'Chalecos Antibalas Nivel IIIA', count: 8, total: 10, icon: 'fa-shield-halved' },
+            { id: 3, name: 'Linternas Tácticas LED', count: 14, total: 14, icon: 'fa-flashlight' },
+            { id: 4, name: 'Conos de Seguridad', count: 20, total: 20, icon: 'fa-triangle-exclamation' }
+        ];
+
+        const attendanceLogs = [
+            { officer: 'Félix del Valle', post: 'Supervisión General', event: 'ENTRADA', time: '07:00 AM' },
+            { officer: 'Carlos Pérez', post: 'Garita 1', event: 'ENTRADA', time: '07:15 AM' }
+        ];
+
+        const posts = [
+            { name: 'Puesto 01 - Garita Principal', officer: 'Carlos Pérez', status: 'Operativo', statusColor: 'emerald' },
+            { name: 'Puesto 02 - Depósito Norte', officer: 'José Rodríguez', status: 'Operativo', statusColor: 'emerald' },
+            { name: 'Puesto 03 - Estacionamiento Subterráneo', officer: 'Marcos Linares', status: 'Ronda activa', statusColor: 'sky' },
+            { name: 'Puesto 04 - Acceso Peatonal Este', officer: 'Sin Asignar', status: 'En Relevo', statusColor: 'amber' }
+        ];
+
+        const staffDirectory = [
+            { name: 'Félix del Valle', role: 'Supervisor General', status: 'Activo', phone: '+58 412-0000001', code: 'SUP-01' },
+            { name: 'Carlos Pérez', role: 'Oficial de Seguridad', status: 'Activo', phone: '+58 414-0000002', code: 'OFI-12' },
+            { name: 'José Rodríguez', role: 'Oficial de Control', status: 'Activo', phone: '+58 416-0000003', code: 'OFI-14' },
+            { name: 'Marcos Linares', role: 'Inspector Nocturno', status: 'Activo', phone: '+58 424-0000004', code: 'INS-03' },
+            { name: 'Ana Mendoza', role: 'Operadora Central 24/7', status: 'Activo', phone: '+58 412-0000005', code: 'CEN-02' }
+        ];
+
+        // --- SISTEMA DE PESTAÑAS ---
+        function switchTab(tabId) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Quitar estado activo de botones
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
+            document.querySelectorAll('.mobile-tab').forEach(btn => {
+                btn.classList.remove('text-sky-400');
+                btn.classList.add('text-slate-400');
+            });
+
+            // Mostrar módulo actual
+            const targetModule = document.getElementById(`module-${tabId}`);
+            if (targetModule) targetModule.classList.remove('hidden');
+
+            // Activar botón de escritorio
+            const desktopBtn = document.getElementById(`btn-tab-${tabId}`);
+            if (desktopBtn) desktopBtn.classList.add('tab-active');
+
+            // Activar botón móvil
+            const mobileBtn = document.getElementById(`mbtn-tab-${tabId}`);
+            if (mobileBtn) {
+                mobileBtn.classList.remove('text-slate-400');
+                mobileBtn.classList.add('text-sky-400');
+            }
+        }
+
+        // --- INICIALIZACIÓN DE COMPONENTES ---
+        window.onload = function() {
+            renderLogs();
+            renderCheckpoints();
+            renderInventory();
+            renderAttendance();
+            renderPosts();
+            renderDirectory(staffDirectory);
+
+            // Reloj en vivo
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('liveClock').innerText = now.toLocaleTimeString();
+            }, 1000);
+        };
+
+        // --- 1. BITÁCORA LOGIC ---
+        function addLogEntry(e) {
             e.preventDefault();
             const officer = document.getElementById('logOfficer').value;
             const type = document.getElementById('logType').value;
@@ -179,37 +539,203 @@
             const now = new Date();
             const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            const logContainer = document.getElementById('logContainer');
-            let borderColor = 'border-blue-600';
-            let badgeBg = 'bg-blue-100 text-blue-800';
-
+            let style = 'border-sky-500 bg-sky-950/20';
             if (type === 'Incidente / Alarma') {
-                borderColor = 'border-red-600';
-                badgeBg = 'bg-red-100 text-red-800';
+                style = 'border-red-500 bg-red-950/30';
                 const incElem = document.getElementById('stat-incidents');
                 incElem.innerText = parseInt(incElem.innerText) + 1;
-            } else if (type === 'Relevo de Turno') {
-                borderColor = 'border-slate-700';
-                badgeBg = 'bg-slate-200 text-slate-700';
             }
 
-            const newLog = document.createElement('div');
-            newLog.className = `p-3 bg-slate-50 rounded-lg border-l-4 ${borderColor} flex justify-between items-start`;
-            newLog.innerHTML = `
-                <div>
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="text-xs font-bold text-slate-800">${officer}</span>
-                        <span class="text-[10px] ${badgeBg} font-semibold px-2 py-0.5 rounded">${type}</span>
-                    </div>
-                    <p class="text-sm text-slate-600">${message}</p>
-                </div>
-                <span class="text-xs font-medium text-slate-400">${timeStr}</span>
-            `;
+            logs.unshift({ id: Date.now(), officer, type, message, time: timeStr, style });
+            logCounter++;
+            document.getElementById('stat-logs') ? document.getElementById('stat-logs').innerText = logCounter : null;
 
-            logContainer.prepend(newLog);
-            logCount++;
-            document.getElementById('stat-logs').innerText = logCount;
+            renderLogs();
             document.getElementById('logForm').reset();
+        }
+
+        function renderLogs() {
+            const container = document.getElementById('logContainer');
+            container.innerHTML = logs.map(log => `
+                <div class="p-3.5 rounded-lg border-l-4 ${log.style} border border-slate-700/50 flex justify-between items-start gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xs font-bold text-white">${log.officer}</span>
+                            <span class="text-[10px] bg-slate-700 text-slate-200 px-2 py-0.5 rounded font-medium">${log.type}</span>
+                        </div>
+                        <p class="text-xs text-slate-300">${log.message}</p>
+                    </div>
+                    <span class="text-[10px] font-mono text-slate-400 shrink-0">${log.time}</span>
+                </div>
+            `).join('');
+        }
+
+        // --- 2. RONDAS LOGIC ---
+        function renderCheckpoints() {
+            const container = document.getElementById('checkpointsContainer');
+            let completed = 0;
+
+            container.innerHTML = checkpoints.map(cp => {
+                if (cp.checked) completed++;
+                return `
+                    <div class="p-3 rounded-lg bg-slate-900 border ${cp.checked ? 'border-emerald-500/40 bg-emerald-950/10' : 'border-slate-700'} flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <input type="checkbox" ${cp.checked ? 'checked' : ''} onchange="toggleCheckpoint(${cp.id})" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+                            <div>
+                                <p class="text-xs font-bold ${cp.checked ? 'text-emerald-300' : 'text-slate-300'}">${cp.name}</p>
+                                <span class="text-[10px] text-slate-400">Hora: ${cp.time}</span>
+                            </div>
+                        </div>
+                        <i class="fa-solid ${cp.checked ? 'fa-check text-emerald-400' : 'fa-clock text-slate-500'} text-xs"></i>
+                    </div>
+                `;
+            }).join('');
+
+            const percent = Math.round((completed / checkpoints.length) * 100);
+            document.getElementById('roundProgressText').innerText = `${completed} / ${checkpoints.length} (${percent}%)`;
+            document.getElementById('roundProgressBar').style.width = `${percent}%`;
+
+            if (percent === 100) {
+                document.getElementById('roundBadge').className = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs px-3 py-1 rounded-full font-semibold w-fit";
+                document.getElementById('roundBadge').innerText = "Completada";
+            }
+        }
+
+        function toggleCheckpoint(id) {
+            const cp = checkpoints.find(c => c.id === id);
+            if (cp) {
+                cp.checked = !cp.checked;
+                cp.time = cp.checked ? new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+                renderCheckpoints();
+            }
+        }
+
+        function resetRonda() {
+            checkpoints.forEach(c => { c.checked = false; c.time = '--:--'; });
+            renderCheckpoints();
+        }
+
+        function completeRonda() {
+            checkpoints.forEach(c => { c.checked = true; c.time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); });
+            renderCheckpoints();
+            const roundsElem = document.getElementById('stat-rounds');
+            roundsElem.innerText = parseInt(roundsElem.innerText) + 1;
+        }
+
+        // --- 3. ALMACÉN LOGIC ---
+        function renderInventory() {
+            const container = document.getElementById('inventoryGrid');
+            container.innerHTML = inventory.map(item => `
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col justify-between">
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-semibold text-slate-300">${item.name}</span>
+                        <i class="fa-solid ${item.icon} text-amber-400"></i>
+                    </div>
+                    <div class="mt-4 flex items-baseline justify-between">
+                        <span class="text-2xl font-black text-white">${item.count} <span class="text-xs font-normal text-slate-400">/ ${item.total}</span></span>
+                        <span class="text-[10px] ${item.count > 0 ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-red-950 text-red-400 border border-red-800'} px-2 py-0.5 rounded font-mono">
+                            ${item.count > 0 ? 'Disponible' : 'Agotado'}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleInventoryMovement(e) {
+            e.preventDefault();
+            const name = document.getElementById('invEquipment').value;
+            const action = document.getElementById('invAction').value;
+            const item = inventory.find(i => i.name === name);
+
+            if (item) {
+                if (action === 'prestamo' && item.count > 0) {
+                    item.count--;
+                } else if (action === 'devolucion' && item.count < item.total) {
+                    item.count++;
+                }
+                renderInventory();
+            }
+        }
+
+        // --- 4. ASISTENCIA LOGIC ---
+        function registerAttendance(e) {
+            e.preventDefault();
+            const officer = document.getElementById('attOfficer').value;
+            const post = document.getElementById('attPost').value;
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            attendanceLogs.unshift({ officer, post, event: attendanceType, time: timeStr });
+            renderAttendance();
+            document.getElementById('attOfficer').value = '';
+        }
+
+        function renderAttendance() {
+            const tbody = document.getElementById('attendanceTableBody');
+            tbody.innerHTML = attendanceLogs.map(a => `
+                <tr class="hover:bg-slate-800/40">
+                    <td class="p-3 font-semibold text-white">${a.officer}</td>
+                    <td class="p-3 text-slate-400">${a.post}</td>
+                    <td class="p-3">
+                        <span class="text-[10px] ${a.event === 'ENTRADA' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-700 text-slate-300'} px-2 py-0.5 rounded font-bold">
+                            ${a.event}
+                        </span>
+                    </td>
+                    <td class="p-3 font-mono text-slate-400">${a.time}</td>
+                </tr>
+            `).join('');
+        }
+
+        // --- 5. OPERACIONES LOGIC ---
+        function renderPosts() {
+            const container = document.getElementById('postsGrid');
+            container.innerHTML = posts.map(p => `
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center">
+                    <div>
+                        <h4 class="text-xs font-bold text-white">${p.name}</h4>
+                        <p class="text-[11px] text-slate-400">Oficial: ${p.officer}</p>
+                    </div>
+                    <span class="text-[10px] bg-${p.statusColor}-950 text-${p.statusColor}-400 border border-${p.statusColor}-800 px-2 py-1 rounded font-semibold">
+                        ${p.status}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // --- 6. DIRECTORIO LOGIC ---
+        function renderDirectory(list) {
+            const container = document.getElementById('directoryGrid');
+            container.innerHTML = list.map(item => `
+                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold text-sky-400 text-xs border border-slate-600">
+                            ${item.name.split(' ').map(n=>n[0]).join('')}
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white">${item.name}</p>
+                            <p class="text-[11px] text-slate-400">${item.role}</p>
+                            <p class="text-[10px] font-mono text-sky-400">${item.phone}</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded font-semibold">
+                        ${item.status}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        function filterDirectory() {
+            const query = document.getElementById('directorySearch').value.toLowerCase();
+            const filtered = staffDirectory.filter(s => s.name.toLowerCase().includes(query) || s.role.toLowerCase().includes(query));
+            renderDirectory(filtered);
+        }
+
+        // --- SISTEMA DE ALERTA / BOTÓN DE PÁNICO ---
+        function triggerPanicAlert() {
+            document.getElementById('panicBanner').classList.remove('hidden');
+        }
+
+        function dismissPanic() {
+            document.getElementById('panicBanner').classList.add('hidden');
         }
     </script>
 </body>
